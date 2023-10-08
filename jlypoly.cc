@@ -98,13 +98,15 @@ struct Z {
   }
 };
 
+}
+
 namespace simp {
-  std::vector<Z> fac, ifac, invn;
+  std::vector<atcoder::Z> fac, ifac, invn;
   void check(int x) {
     if (fac.empty()) {
-      fac={Z(1), Z(1)};
-      ifac={Z(1), Z(1)};
-      invn={Z(0), Z(1)};
+      fac={atcoder::Z(1), atcoder::Z(1)};
+      ifac={atcoder::Z(1), atcoder::Z(1)};
+      invn={atcoder::Z(0), atcoder::Z(1)};
     }
     while (fac.size()<=x) {
       int n = fac.size(), m = fac.size() * 2;
@@ -112,31 +114,25 @@ namespace simp {
       ifac.resize(m);
       invn.resize(m);
       for (int i=n;i<m;i++) {
-        fac[i]=fac[i-1]*Z(i);
-        invn[i]=Z(P-P/i)*invn[P%i];
+        fac[i]=fac[i-1]*atcoder::Z(i);
+        invn[i]=atcoder::Z(atcoder::P-atcoder::P/i)*invn[atcoder::P%i];
         ifac[i]=ifac[i-1]*invn[i];
       }
     }
   }
-  Z gfac(int x) {
+  atcoder::Z gfac(int x) {
     check(x); return fac[x];
   }
-  Z ginv(int x) {
+  atcoder::Z ginv(int x) {
     check(x); return invn[x];
   }
-  Z gifac(int x) {
+  atcoder::Z gifac(int x) {
     check(x); return ifac[x];
   }
-  Z binom(int n,int m) {
-    if (m < 0 || m > n) return Z(0);
+  atcoder::Z binom(int n,int m) {
+    if (m < 0 || m > n) return atcoder::Z(0);
     return gfac(n)*gifac(m)*gifac(n - m);
   }
-}
-
-}
-
-inline atcoder::Z C(int n, int m) {
-  return atcoder::simp::binom(n, m);
 }
 
 inline atcoder::Z fpow(long long a, long long b) {
@@ -148,3 +144,8 @@ using i64 = long long;
 
 const int maxn = 500050;
 
+int main() {
+  atcoder::Z a = 2;
+  cout << 1 / a << endl;
+  return 0;
+}
