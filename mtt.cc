@@ -125,31 +125,7 @@ inline void fft(vector<Complex<T>> &arr, int base, bool forw = true) {
     std::reverse(arr.begin() + 1, arr.end());
   }
 }
-template <typename T = double>
-inline void fft_mul_inplace(vector<Complex<T>> &f, vector<Complex<T>> &g) {
-  int u = f.size() + g.size() - 1;
-  if (std::min(f.size(), g.size()) <= 8) {
-    vector<Complex<T>> tmp(u);
-    int p = f.size(); f.resize(u);
-    for (int i = p - 1; i >= 0; i --)
-      for (int j = g.size() - 1; j >= 0; j --)
-        tmp[i + j] += f[i] * g[j];
-    return f = tmp, void();
-  }
-  int L = get_len(u), K = get_log(L);
-  f.resize(L), g.resize(L);
-  fft(f, K); fft(g, K);
-  for (int i = 0; i < L; i ++)
-    f[i] *= g[i];
-  fft(f, K, false); f.resize(u);
 }
-template <typename T = double>
-inline void fft_mul(vector<Complex<T>> &f, const vector<Complex<T>> &g) {
-  return fft_mul_inplace<T>(f, vector<Complex<T>>(g));
-}
-}
-using gf::fft_mul_inplace;
-using gf::fft_mul;
 // $END - gf/fft.h
 // #START - gf/mtt.h
 namespace gf {
