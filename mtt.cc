@@ -204,7 +204,7 @@ T fpower(T a, i64 b) {
 struct Z {
   i64 x;
   Z(i64 x = 0) : x(norm(x%P)) {}
-  int val() const {
+  i64 val() const {
     return x;
   }
   Z operator-() const {
@@ -254,6 +254,14 @@ struct Z {
     res /= rhs;
     return res;
   }
+
+  friend constexpr bool operator==(const Z &lhs, const Z &rhs) {
+    return lhs.x == rhs.x;
+  }
+  friend constexpr bool operator!=(const Z &lhs, const Z &rhs) {
+    return lhs.x != rhs.x;
+  }
+
   friend std::istream &operator>>(std::istream &is, Z &a) {
     i64 v;
     is >> v;
@@ -310,7 +318,7 @@ void idft(std::vector<Z> &a) {
   int n = a.size();
   std::reverse(a.begin() + 1, a.end());
   dft(a);
-  Z inv = (1 - P) / n;
+  Z inv = (1 - P) / n; // attention: if P and Z is unsigned, this should be careful!!!
   for (int i = 0; i < n; i++) {
     a[i] *= inv;
   }
