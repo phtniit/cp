@@ -574,10 +574,10 @@ struct Poly {
   }
 };
 
-std::pair<atcoder::Poly, atcoder::Poly> divAndMod(atcoder::Poly p, atcoder::Poly q) {
+std::pair<Poly, Poly> divAndMod(Poly p, Poly q) {
   int n = p.size(), m = q.size();
   if (n < m) {
-    return {atcoder::Poly({0}), p};
+    return {Poly({0}), p};
   }
   reverse(q.a.begin(), q.a.end());
   reverse(p.a.begin(), p.a.end());
@@ -588,9 +588,9 @@ std::pair<atcoder::Poly, atcoder::Poly> divAndMod(atcoder::Poly p, atcoder::Poly
   return {ans, (p - ans * q).modxk(m-1)};
 }
 
-atcoder::Poly berlekampMassey(const atcoder::Poly &s) {
-  atcoder::Poly c;
-  atcoder::Poly oldC;
+Poly berlekampMassey(const Poly &s) {
+  Poly c;
+  Poly oldC;
   int f = -1;
   for (int i = 0; i < s.size(); i++) {
     auto delta = s[i];
@@ -607,14 +607,14 @@ atcoder::Poly berlekampMassey(const atcoder::Poly &s) {
       auto d = oldC;
       d = d * -1;
       d.a.insert(d.a.begin(), 1);
-      atcoder::Z df1 = 0;
+      Z df1 = 0;
       for (int j = 1; j <= d.size(); j++) {
         df1 += d[j - 1] * s[f + 1 - j];
       }
       assert(df1.x != 0);
       auto coef = delta / df1;
       d = d * coef;
-      atcoder::Poly zeros;
+      Poly zeros;
       zeros.resize(i - f - 1);
       zeros.a.insert(zeros.a.end(), d.a.begin(), d.a.end());
       d = zeros;
@@ -631,7 +631,7 @@ atcoder::Poly berlekampMassey(const atcoder::Poly &s) {
   return c;
 }
 
-atcoder::Z linearRecurrence(atcoder::Poly p, atcoder::Poly q, long long n) {
+Z linearRecurrence(Poly p, Poly q, long long n) {
   int m = q.size() - 1;
   while (n > 0) {
     auto newq = q;
@@ -769,6 +769,36 @@ atcoder::Poly interFast(const std::vector<atcoder::Z>& x, const std::vector<atco
     v[i] = y[i] / v[i]; // v_i = y_i / g'(x_i)
   }
   return interDaq(v, x, 0, n-1).first;
+}
+
+}
+
+namespace matrix {
+
+atcoder::Z det(std::vector<std::vector<atcoder::Z>> a) {
+  int n = a.size();
+  atcoder::Z ans = 1;
+  for (int j = 0; j < n; ++j) {
+    if (a[j][j].x == 0) {
+      for (int i = j+1; i < n; ++i) if (a[i][j].x) {
+        swap(a[i], a[j]);
+        ans = -ans;
+        break;
+      }
+    }
+    if (a[j][j].x == 0) return 0;
+    ans *= a[j][j];
+    auto t = a[j][j].inv();
+    for (int k = j; k < n; ++k) a[j][k] *= t;
+    for (int i = j+1; i < n; ++i) {
+      t = -a[i][j];
+      for (int k = j; k < n; ++k) {
+        a[i][k] += a[j][k] * t;
+      }
+      assert(a[i][j].x == 0);
+    }
+  }
+  return ans;
 }
 
 }
