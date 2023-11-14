@@ -72,7 +72,7 @@ struct SuffixArray {
       }
     }
     if (n > 1) {
-      rmq = new RMQ(lc);
+      rmq = new RMQ<int>(lc);
     }
   }
   ~SuffixArray() {
