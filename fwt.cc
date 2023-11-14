@@ -198,6 +198,37 @@ void FastXOR(i64* a, i64* b, i64* c, int k) {
   ifmtXOR(c, k);
 }
 
+using zt = long long; // using zt = atcoder::Z;
+void subsetConvulsion(int n, zt A[], zt B[], zt F[]) {
+  // F_k = \sum_{[i AND j = 0] \land [i OR j = k]}{A_i * B_j} 
+  static zt a[22][maxn], b[22][maxn], f[22][maxn];
+  for (int i = 0; i < (1<<n); ++i) {
+    a[__builtin_popcount(i)][i] = A[i];
+    b[__builtin_popcount(i)][i] = B[i];
+  }
+  for (int i = 0; i <= n; ++i) {
+    for (int k = 0; k < n; ++k) {
+      for (int j = 0; j < (1<<n); ++j) if (j & (1<<k)) {
+        a[i][j] += a[i][j^(1<<k)];
+        b[i][j] += b[i][j^(1<<k)];
+      }
+    }
+  }
+  for (int i = 0; i < (1<<n); ++i) {
+    for (int j = 0; j <= n; ++j) for (int k = 0; k <= n; ++k) if (j + k <= n) {
+      f[j+k][i] += a[j][i] * b[k][i];
+    }
+  }
+  for (int i = 0; i <= n; ++i) {
+    for (int k = 0; k < n; ++k) {
+      for (int j = (1<<n)-1; j >= 0; --j) if (j & (1<<k)) {
+        f[i][j] -= f[i][j^(1<<k)];
+      }
+    }
+  }
+  for (int i = 0; i < (1<<n); ++i) F[i] = f[__builtin_popcount(i)][i];
+}
+
 i64 a[maxn+10], b[maxn+10], c[maxn+10], d[maxn+10];
 
 int main() {
