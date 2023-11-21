@@ -632,6 +632,8 @@ Poly berlekampMassey(const Poly &s) {
 }
 
 Z linearRecurrence(Poly p, Poly q, long long n) {
+  // q is "reversed", ex: ``f[n] = g1 * f[n-1] + g2 * f[n-2]`` => ``q(x) = 1 - g1*x - g2*x^2``
+  // p is (f@[0,k) * q).modxk(k)
   int m = q.size() - 1;
   while (n > 0) {
     auto newq = q;
