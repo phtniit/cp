@@ -166,7 +166,7 @@ void FastAND(i64* a, i64* b, i64* c, int k) {
   ifmtAND(c, k);
 }
 
-void fmtXOR(i64* a, int k) {
+void fmtXOR(i64* a, int k) { // a_j = \sum{(-1)^popcount(i&j) * a_i}
   for (int i = 0; i < k; ++i) {
     for (int j = 0; j < (1<<k); ++j) if (j & (1<<i)) {
       i64 x = a[j^(1<<i)], y = a[j];
