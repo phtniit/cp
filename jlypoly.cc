@@ -140,6 +140,7 @@ inline atcoder::Z fpow(long long a, long long b) {
 }
 
 using namespace std;
+using zt = atcoder::Z;
 using i64 = long long;
 
 const int maxn = 500050;
