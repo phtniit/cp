@@ -14,6 +14,7 @@ const int maxn = 100010;
 // __builtin_popcount(x)
 // __lg(x)
 // biset set()/reset()/filp()
+// #define cnr(i, n, r) for(int i=(1<<r)-1,_;i<1<<n;_=i+(i&-i),i=(i&~_)>>__builtin_ffs(i)|_)
 int main() {
   static char s[maxn];
   scanf("%s", s);
