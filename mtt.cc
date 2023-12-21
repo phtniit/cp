@@ -178,7 +178,7 @@ inline void mtt_mul(vector<int> &f, vector<int> &g, unsigned int Mod) {
 
 namespace atcoder {
 
-constexpr int P = 1234567891;
+constexpr int P = 1234567891; // ATTENTION: some algorithm may not suitable for ``not-prime-P``
 using i64 = long long;
 
 // assume -P <= x < 2P
