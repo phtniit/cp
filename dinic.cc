@@ -61,25 +61,29 @@ template <class Cap> struct mf_graph {
       cur.resize(n+1);
     }
 
-    auto bfs = [&]() {
+    auto bfs = [&]() -> bool {
       for (int i = 1; i <= n; ++i) {
         cur[i] = 0;
         lev[i] = limint;
       }
-      static queue<int> q;
-      assert(q.empty());
+      static vector<int> q;
+      if (q.size() < n + 5) {
+        q.resize(n+5);
+      }
+      int h = 0, t = 0;
       lev[S] = 0;
-      q.push(S);
-      while (!q.empty()) {
-        int u = q.front(); q.pop();
+      q[t++] = S;
+      while (h < t) {
+        int u = q[h++];
         for (int i = 0; i < g[u].size(); ++i) {
           int e = g[u][i], v = vv[e];
           if (cap[e] > flow[e] && lev[v] == limint) {
             lev[v] = lev[u] + 1;
-            q.push(v);
+            q[t++] = v;
           }
         }
       }
+      return lev[T] < limint;
     };
 
     std::function<Cap(int, Cap)> dfs = [&](int u, Cap c) {
@@ -105,13 +109,8 @@ template <class Cap> struct mf_graph {
     };
 
     Cap ret = 0;
-    while (true) {
-      bfs();
-      Cap tmp = dfs(S, limT);
-      if (tmp == 0) {
-        break;
-      }
-      ret += tmp;
+    while (bfs()) {
+      ret += dfs(S, limT);
     }
     return ret;
   }
