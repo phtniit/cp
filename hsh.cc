@@ -65,7 +65,7 @@ struct hshTwo {
     return *this;
   }
   u64 toint() {
-    return (_x << 30) | _y;
+    return (_x << 32) | _y;
   }
 
   friend hshTwo operator+(const hshTwo& lhs, const hshTwo& rhs) {
