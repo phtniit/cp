@@ -199,10 +199,11 @@ void FastXOR(i64* a, i64* b, i64* c, int k) {
 }
 
 using zt = long long; // using zt = atcoder::Z;
-void subsetConvulsion(int n, zt A[], zt B[], zt F[]) {
+void subsetConvolution(int n, zt A[], zt B[], zt F[]) {
   // F_k = \sum_{[i AND j = 0] \land [i OR j = k]}{A_i * B_j} 
   static zt a[22][maxn], b[22][maxn], f[22][maxn];
   for (int i = 0; i < (1<<n); ++i) {
+    for (int j = 0; j <= n; ++j) a[j][i] = b[j][i] = f[j][i] = 0;
     a[__builtin_popcount(i)][i] = A[i];
     b[__builtin_popcount(i)][i] = B[i];
   }
