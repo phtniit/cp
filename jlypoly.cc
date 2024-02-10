@@ -133,6 +133,22 @@ namespace simp {
     if (m < 0 || m > n) return atcoder::Z(0);
     return gfac(n)*gifac(m)*gifac(n - m);
   }
+  atcoder::Z catalan(int n){
+    // assert(n > 0);
+    return binom(n*2, n) - binom(n*2, n+1);
+  }
+  // 到达 (x,y) 且不跨过对角线的方案数
+  atcoder::Z catalan(int x,int y){
+    assert(y<=x);
+    assert(y>0);
+    return binom(x+y, x) - binom(x+y, y-1);
+  }
+  // 到达 (x,y) 且不跨过 Y=X+c 的方案数
+  atcoder::Z catalan(int x,int y,int c){
+    assert(y>c);
+    if(c<0||x+c<y)return 0;
+    return binom(x+y, x) - binom(x+y, y-c-1);
+  }
 }
 
 inline atcoder::Z fpow(long long a, long long b) {
