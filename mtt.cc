@@ -693,6 +693,8 @@ namespace simp {
 namespace lagrange {
 
 atcoder::Poly inter(const std::vector<atcoder::Z>& x, const std::vector<atcoder::Z>& y) { // atcoder::P can be any prime number
+  // f_i(x) = y_i \cdot \prod_{j \neq i}{(x-xj) / (xi-xj)}
+  // f(x) = \sum{f_i(x)}
   int n = x.size();
   assert(n == y.size());
   atcoder::Poly f;
