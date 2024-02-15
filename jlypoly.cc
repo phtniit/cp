@@ -137,18 +137,20 @@ namespace simp {
     // assert(n > 0);
     return binom(n*2, n) - binom(n*2, n+1);
   }
-  // 到达 (x,y) 且不跨过对角线的方案数
+  // reaching (x,y) and not corss the diagonal
   atcoder::Z catalan(int x,int y){
     assert(y<=x);
     assert(y>0);
     return binom(x+y, x) - binom(x+y, y-1);
   }
-  // 到达 (x,y) 且不跨过 Y=X+c 的方案数
+  // reaching (x,y) but not corss the line ``Y=X+c``
   atcoder::Z catalan(int x,int y,int c){
     assert(y>c);
     if(c<0||x+c<y)return 0;
     return binom(x+y, x) - binom(x+y, y-c-1);
   }
+
+  // Euler’s Pentagonal Number Theore: \prod_{1<=i}{(1-x^i)} = 1 + \sigma{(-1)^i * (x ^ {i*(3i-1)/2} + x ^ {i*(3i+1)/2})}
 }
 
 inline atcoder::Z fpow(long long a, long long b) {
