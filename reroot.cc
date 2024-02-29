@@ -1,3 +1,6 @@
+#include <bits/stdc++.h>
+
+const int maxn = 1000010;
 int a[maxn];
 
 namespace atcoder {
@@ -5,8 +8,7 @@ namespace atcoder {
 #define sz(v) ((int)(v).size())
 #define all(v) (v).begin(), (v).end()
 using namespace std;
-using lint = long long;
-using pi = array<int, 2>;
+using pi = pair<int, int>;
 
 // Need to implement four functions:
 // E: identity
@@ -58,8 +60,8 @@ auto solve(int n, vector<pi> edges) {
   vector<vector<pi>> gph(n);
   gph.resize(n);
   for (int i = 0; i < n - 1; i++) {
-    gph[edges[i][0]].push_back({2 * i, edges[i][1]});
-    gph[edges[i][1]].push_back({2 * i + 1, edges[i][0]});
+    gph[edges[i].first].push_back({2 * i, edges[i].second});
+    gph[edges[i].second].push_back({2 * i + 1, edges[i].first});
   }
   vector<int> ord;
   vector<int> pae(n, -1);
@@ -80,14 +82,14 @@ auto solve(int n, vector<pi> edges) {
     if (~pae[z])
       pref[0] = up_root(rev_dp[z], pae[z]);
     for (int i = 0; i < sz(gph[z]); i++) {
-      pref[i + 1] = suff[i] = up_root(dp[gph[z][i][1]], gph[z][i][0]);
+      pref[i + 1] = suff[i] = up_root(dp[gph[z][i].second], gph[z][i].first);
     }
     for (int i = 1; i <= sz(gph[z]); i++)
       pref[i] = merge(pref[i - 1], pref[i]);
     for (int i = sz(gph[z]) - 1; i >= 0; i--)
       suff[i] = merge(suff[i], suff[i + 1]);
     for (int i = 0; i < sz(gph[z]); i++) {
-      rev_dp[gph[z][i][1]] = take_vertex(merge(pref[i], suff[i + 1]), z);
+      rev_dp[gph[z][i].second] = take_vertex(merge(pref[i], suff[i + 1]), z);
     }
   }
   vector<elem> sln(n, E());
@@ -116,3 +118,7 @@ auto solve(int n, vector<pi> edges) {
 }
 
 } // namespace atcoder
+
+int main() {
+  return 0;
+}
