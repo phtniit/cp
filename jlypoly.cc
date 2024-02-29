@@ -153,14 +153,14 @@ namespace simp {
   // Euler’s Pentagonal Number Theore: \prod_{1<=i}{(1-x^i)} = 1 + \sigma{(-1)^i * (x ^ {i*(3i-1)/2} + x ^ {i*(3i+1)/2})}
 }
 
-pair<int, int> approx(int p, int q, int A) { // ``x/a = q (mod p)`` AND ``x < A``
+std::pair<int, int> approx(int p, int q, int A) { // ``x/a = q (mod p)`` AND ``x < A``
   int x = q, y = p, a = 1, b = 0;
   while (x > A) {
-    swap(x, y); swap(a, b);
+    std::swap(x, y); std::swap(a, b);
     a -= x / y * b;
     x %= y;
   }
-  return make_pair(x, a);
+  return std::make_pair(x, a);
 }
 
 inline atcoder::Z fpow(long long a, long long b) {
