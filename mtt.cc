@@ -178,7 +178,7 @@ inline void mtt_mul(vector<int> &f, vector<int> &g, unsigned int Mod) {
 
 namespace atcoder {
 
-constexpr int P = 1234567891; // ATTENTION: some algorithm may not suitable for ``not-prime-P``
+constexpr int P = 998244353; // ATTENTION: some algorithm may not suitable for ``not-prime-P``
 using i64 = long long;
 
 // assume -P <= x < 2P
@@ -381,6 +381,7 @@ struct Poly {
     return Poly(res);
   }
 
+  /*
   friend Poly operator*(const Poly& a, const Poly& b) { // atcoder::convolution_P, 1e9+7
     if (a.size() == 0 || b.size() == 0) {
       return Poly();
@@ -411,7 +412,6 @@ struct Poly {
     return res;
   }
 
-  /*
   friend Poly operator*(const Poly& a, const Poly& b) { // atcoder::convolution, 998244353
     if (a.size() == 0 || b.size() == 0) {
       return Poly();
@@ -429,7 +429,6 @@ struct Poly {
   }
   */
 
-  /*
   friend Poly operator*(Poly a, Poly b) {
     if (a.size() == 0 || b.size() == 0) {
       return Poly();
@@ -450,7 +449,6 @@ struct Poly {
     a.resize(tot);
     return a;
   }
-  */
   friend Poly operator*(Z a, Poly b) {
     for (int i = 0; i < int(b.size()); i++) {
       b[i] *= a;
@@ -634,6 +632,7 @@ Poly berlekampMassey(const Poly &s) {
 Z linearRecurrence(Poly p, Poly q, long long n) {
   // q is "reversed", ex: ``f[n] = g1 * f[n-1] + g2 * f[n-2]`` => ``q(x) = 1 - g1*x - g2*x^2``
   // p is (f@[0,k) * q).modxk(k)
+  // p.size() = q.size() - 1
   int m = q.size() - 1;
   while (n > 0) {
     auto newq = q;
@@ -814,79 +813,38 @@ inline atcoder::Z fpow(long long a, long long b) {
 using namespace std;
 using i64 = long long;
 
-const int maxn = 500050;
-
-int w[55];
-atcoder::Z dfs(int n, int c) {
-  static atcoder::Z dp[31000][55];
-  static bool vis[31000][55];
-  if (vis[n][c]) return dp[n][c];
-  vis[n][c] = true;
-
-  if (c == 0) {
-    return dp[n][c] = 0;
-  }
-  if (n == 0) {
-    return dp[n][c] = 1;
-  }
-
-  auto res = dfs(n, c-1);
-  if (n >= w[c]) {
-    res += dfs(n-w[c], c);
-  }
-  return dp[n][c] = res;
-}
-
 int main() {
-  freopen("pay.in", "r", stdin);
-  freopen("pay.out", "w", stdout);
-
-  int m = 49;
-  i64 n = 1e18;
-  cin >> m >> n;
-  for (int i = 1; i <= m; ++i) {
-    w[i] = 500-i;
-    cin >> w[i];
+  int n, k;
+  scanf("%d %d", &n, &k);
+  atcoder::Poly f;
+  f.resize(k+1);
+  for (int a, i = 1; i <= k; ++i) {
+    scanf("%d", &a);
+    f[i] = a;
   }
-
-  /*
-  atcoder::Poly s;
-  s.resize(2000);
-  for (int i = 0; i < 2000; ++i) s[i] = dfs(i+1, 3);
-  auto q = berlekampMassey(s);
-  cout << q.size() << endl;
-  for (int i = 0; i < q.size(); ++i) {
-    printf("%lld ", q[i].x);
+  atcoder::Poly A;
+  A.resize(k);
+  for (int a, i = 0; i < k; ++i) {
+    scanf("%d", &a);
+    A[i] = a;
   }
-  puts("");
-  */
-
-  auto daq = [&](auto self, int l, int r) -> atcoder::Poly {
-    if (l == r) {
-      atcoder::Poly res;
-      res.resize(w[l] + 1);
-      res[0] = +1;
-      res[w[l]] = -1;
-      return res;
-    }
-    int m = (l + r) / 2;
-    return self(self, l, m) * self(self, m+1, r);
-  };
-  auto p = daq(daq, 1, m);
-  /*
-  cout << p.size() << endl;
-  for (int i = 0; i < p.size(); ++i) {
-    printf("%lld ", p[i].x);
+  if (n < k) {
+    cout << A[n] << "\n";
+    return 0;
   }
-  puts("");
-  */
+  // cout << atcoder::linearRecurrence((A * f).shift(k), atcoder::Poly({1}) - f, n - k) << "\n";
+  // cout << atcoder::linearRecurrence(A - (A * f).modxk(k), atcoder::Poly({1}) - f, n) << "\n";
 
-  int k = p.size() - 1;
-  atcoder::Poly q;
-  q.resize(k);
-  for (int i = 0; i < k; ++i) q[i] = dfs(i, m);
-  q = (q * p).modxk(k);
-
-  cout << linearRecurrence(q, p, n) << endl;
+  auto F = atcoder::Poly({1}) - f;
+  reverse(F.a.begin(), F.a.end());
+  atcoder::Poly res({1}), bas({0,1});
+  while (n) {
+    if (n & 1) res = divAndMod(res * bas, F).second;
+    n >>= 1;
+    bas = divAndMod(bas * bas, F).second;
+  }
+  atcoder::Z ans = 0;
+  for (int i = 0; i < min(res.size(), A.size()); ++i) ans += res[i] * A[i];
+  cout << ans << endl;
   return 0;
 }
