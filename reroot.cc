@@ -34,7 +34,7 @@ elem take_vertex(elem dp, int v) {
   dp.diam = max(dp.diam, dp.w[2] + a[v]);
   return dp;
 }
-elem up_root(elem dp, int e) {
+elem up_root(elem dp, int e) { // which may request edges
   dp.w[1] = dp.w[2] = dp.w[3] = dp.w[4] = dp.len;
   return dp;
 }
