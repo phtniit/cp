@@ -193,7 +193,38 @@ namespace simp {
     int X = (x-y) / 2, Y = (x+y) / 2;
     return catalan3(X, Y, a, b);
   }
-
+  atcoder::Z dyck(int n, int m) {
+    // P moving from (0,0) to (n,m)
+    // Q moving from (0,0) to (n,m);
+    // and Q never "higher" than P at any time, not crossing (may touching)
+    if (n == 0 || m == 0) return 1;
+    return binom(n+m, m) * binom(n+m, m) - binom(n+m, m-1) * binom(n+m, m+1);
+  }
+  // use (0,1)/(1,0) moving from (0,0)->(n,tn) is the same as
+  // use (1,t)/(1,-1) moving fromt (0,0)->((t+1)n, 0) but never "lower" than ``Y=0``
+  atcoder::Z dyck2(int n, int t) {
+    // moving from (0,0) to (n, tn)
+    // never "lower" than ``Y=tx`` at any time
+    return binom(t*n+n, n) * ginv(t*n+1);
+  }
+  atcoder::Z dyck3(int n, int t, int m) {
+    // moving from (0,0) to (n,m) where ``m>=tn``
+    // never "lower" than ``Y=tx`` at any time
+    return binom(m+n, n) * (m-t*n+1) * ginv(m+1);
+  }
+  atcoder::Z dyck4(int n, int t, int k) {
+    // moving from (0,0) to (n, tn)
+    // never "lower" than ``Y=tx`` at any time
+    // with exactly ``K`` corner (that is from U to L)
+    return binom(n-1, k-1) * binom(t*n, k-1) * ginv(k);
+  }
+  atcoder::Z dyck5(int n, int t, int m, int k) {
+    // moving from (0,0) to (n,m) where ``m>=tn``
+    // never "lower" than ``Y=tx`` at any time
+    // with exactly ``K`` corner (that is from U to L)
+    return binom(n, k) * binom(m, k-1) * (m-t*n+1) * ginv(n);
+  }
+  
   // Euler’s Pentagonal Number Theore: \prod_{1<=i}{(1-x^i)} = 1 + \sigma{(-1)^i * (x ^ {i*(3i-1)/2} + x ^ {i*(3i+1)/2})}
 }
 
