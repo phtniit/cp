@@ -11,23 +11,17 @@ typedef unsigned long long u64;
 typedef unsigned int u32;
 typedef pair<int, int> pii;
 
-// std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
-// std::shuffle(vt.begin(), vt.end(), std::default_random_engine(rng()));
-// priority_queue<int, vector<int>, greater<int>> minq;
-// ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+// ios::sync_with_stdio(0);cin.tie(0);
 // fflush(stdout);
 
-const int inf = 1000000007;
-const i64 prm = 998244353;
-const i64 inf2 = ((i64)inf) * inf;
-const int maxn = 1100010; // 1.1e6
+// std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+// std::shuffle(vt.begin(), vt.end(), std::default_random_engine(rng()));
 
-inline int read(){
-  int x=0,f=0; char ch=getchar();
-  while(!isdigit(ch)) f|=(ch==45),ch=getchar();
-  while(isdigit(ch)) x=(x<<3)+(x<<1)+(ch^48),ch=getchar();
-  return f?-x:x;
-}
+/* pq
+priority_queue<int, vector<int>, greater<int>> minq;
+auto cmp = [&](int i, int j) { return w[i] < w[j]; };
+priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
+*/
 
 /*
 void read(__int128 &x){
@@ -47,6 +41,18 @@ void write(__int128 x){
 }
 */
 
+const int inf = 1000000007;
+const i64 prm = 998244353;
+const i64 inf2 = ((i64)inf) * inf;
+const int maxn = 1100010; // 1.1e6
+
+inline int read(){
+  int x=0,f=0; char ch=getchar();
+  while(!isdigit(ch)) f|=(ch==45),ch=getchar();
+  while(isdigit(ch)) x=(x<<3)+(x<<1)+(ch^48),ch=getchar();
+  return f?-x:x;
+}
+
 void once() {
   int n = read();
   static int a[maxn];
@@ -56,6 +62,9 @@ void once() {
 }
 
 int main() {
+  static int w[maxn];
+auto cmp = [&](int i, int j)->bool { return w[i] < w[j]; };
+priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
   int tes = 1;
   tes = read();
   while (tes--) {
