@@ -30,13 +30,13 @@ inline int read(){
 
 vector<int> g[maxn];
 vector<int> G[maxn];
-stack<int> st;
+vector<int> st;
 int low[maxn], dfn[maxn];
 int nn;
 void dfs(int u) {
   static int tt = 0;
   low[u] = dfn[u] = ++tt;
-  st.push(u);
+  st.push_back(u);
   for (auto v: g[u]) {
     if (dfn[v]) {
       low[u] = min(low[u], dfn[v]);
@@ -46,10 +46,10 @@ void dfs(int u) {
       if (low[v] == dfn[u]) {
         ++nn;
         while (true) {
-          auto x = st.top();
+          auto x = st.back();
           G[nn].push_back(x);
           G[x].push_back(nn);
-          st.pop();
+          st.pop_back();
           if (x == v) {
             // ATTENTION!!!: st.top() may not be 'u'
             break;
@@ -77,12 +77,12 @@ int main() {
     } else {
       dfs(i);
       assert(st.size() == 1);
-      st.pop();
+      st.pop_back();
     }
   }
   cout << nn-n << endl;
   for (int i = n+1; i <= nn; ++i) {
-    // ATTENTION: when 'G[i].size() == 2', there may be an bridge
+    // ATTENTION: when 'G[i].size() == 2', there may be a bridge
     printf("%d", G[i].size());
     for (auto u: G[i]) printf(" %d", u);
     puts("");
