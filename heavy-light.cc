@@ -49,8 +49,8 @@ void dfs2(int u, int r) {
   }
 }
 
-void gao(int u, int v) {
-  static auto lca = [](int x, int y) {
+auto gao(int u, int v) {
+  auto lca = [](int x, int y) -> int {
     while (rt[x] != rt[y]) {
       if (dep[rt[x]] > dep[rt[y]]) {
         x = fa[rt[x]];
@@ -60,22 +60,18 @@ void gao(int u, int v) {
     }
     return (dep[x] < dep[y] ? x : y);
   };
-  static auto f = [](int x, int d) {
-    // TODO
-  };
   int w = lca(u, v);
-  f(u, dep[w]+1);
-  f(v, dep[w]+1);
-  // TODO: deal with situation at lca
-}
-
-int main() {
-  ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-  //fflush(stdout);
-  // TODO: read in
-  dfs1(1, 0);
-  dfs2(1, 1);
-  // TODO: build seg-tree
-
-  return 0;
+  vector<pii> res;
+  auto f = [&](int x, int y) -> void { // not include 'y'
+    while (rt[x] != rt[y]) {
+      int r = rt[x];
+      res.emplace_back(in[r], in[x]);
+      x = fa[r];
+    }
+    if (x != y) res.emplace_back(in[y]+1, in[x]);
+  };
+  f(u, w);
+  f(v, w);
+  // res.push_back(seg{pos[w], pos[w]}); // which may be handled here
+  return res;
 }
