@@ -65,7 +65,7 @@ namespace simp {
     int X = (x-y) / 2, Y = (x+y) / 2;
     return catalan1(X, Y, c);
   }
-  atcoder::Z catalan3(int x, int y, int a, int b) {
+  atcoder::Z catalan3(int x, int y, int a, int b) { // O((x+y) / (b-a))
     // reaching (x,y) but not cross the line ``Y=X+a`` and ``Y=X+b`` 
     if (x < 0 || y < 0) return 0;
     if (y-x > b) return 0;
