@@ -6,7 +6,7 @@ typedef long long i64;
 typedef pair<int, int> pii;
 
 const int inf = 1000000007;
-const int maxn = 1100010; // 1.1e6
+const int maxn = 1100010;
 
 inline int read(){
   int x=0,f=0; char ch=getchar();
