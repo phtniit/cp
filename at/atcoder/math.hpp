@@ -74,6 +74,21 @@ Z linearRecurrence(Poly p, Poly q, long long n) {
   return p[0] / q[0];
 }
 
+atcoder::Z BM(std::vector<atcoder::Z> vt, int k) {
+  atcoder::Poly p;
+  p.resize(vt.size());
+  for (int i = 0; i < p.size(); ++i) p[i] = vt[i];
+  auto q = berlekampMassey(p);
+  assert(q.size() > 0);
+  int K = q.size() - 1;
+  if (K == 0) return 0;
+  p.a.resize(K);
+  p = (p * q).modxk(K);
+  // f * q = (f mod (x^K)) * q = (p mod (x^K)) * q = (p * q) mod (x^K)
+  // f = ((p * q) mod (x^K)) / q
+  return atcoder::linearRecurrence(p, q, k);
+}
+
 }
 
 namespace lagrange {
@@ -189,6 +204,124 @@ atcoder::Z det(std::vector<std::vector<atcoder::Z>> a) {
     }
   }
   return ans;
+}
+
+}
+
+namespace increasingShape {
+
+using zt = atcoder::Z;
+
+auto f1(atcoder::Poly g, int N) {
+  atcoder::Poly f(vector<zt>(g.size(), 0));
+  for (int i = 0; i < f.size(); ++i) f[i] = simp::gfac(N+i) * simp::gifac(i) * simp::gifac(N);
+  return (g * f).modxk(g.size());
+}
+
+auto f2(atcoder::Poly g, int N) {
+  int n = g.size() - 1;
+  for (int i = 0; i < g.size(); ++i) g[i] *= simp::gifac(n-i);
+  atcoder::Poly f(vector<zt>(N+n, 0));
+  for (int i = 0; i < f.size(); ++i) f[i] = simp::gfac(i);
+  auto res = (g * f).divxk(n).modxk(N);
+  for (int i = 0; i < res.size(); ++i) res[i] *= simp::gifac(i);
+  return res;
+}
+
+atcoder::Poly trangle(atcoder::Poly, vector<int>);
+
+atcoder::Poly ladder(atcoder::Poly left, atcoder::Poly down, vector<int> lim) {
+  int N = lim.size(), M = left.size();
+  assert(down.size() == lim.size());
+  // input: col{0}, row{0}
+  // output: col{N-1}
+
+  // rig[i] = sum_{j<=i}{left[j] * C(N-1 + i-j, i-j)} + sum{down[j] * C(N-1-j + i, i)}
+  auto right = f1(left, N-1) + f2(down, M);
+
+  // up[i] = sum_{j<=i}{down[j] * C(M-1 + i-j, i-j)} + sum{left[j] * C(M-1-j + i, i)
+  auto up = f1(down, M-1) + f2(left, N);
+
+  // then up move from left.size()-1 to left.size()
+  for (auto& e: lim) e -= M;
+  return trangle(up, lim).mulxk(right.size()) + right;
+}
+
+atcoder::Poly trangle(atcoder::Poly down, vector<int> lim) {
+  if (lim[0] == 0) {
+    if (lim.back() == 0) return atcoder::Poly();
+    int k = 0;
+    while (lim[k] == 0) k++;
+    lim.erase(lim.begin(), lim.begin() + k);
+    down.a.erase(down.a.begin(), down.a.begin() + k);
+  }
+
+  int N = down.size();
+  assert(lim.size() == N);
+  // input: row{0}@[0, N)
+  // output: col{N-1}@[0, lim{N-1})
+
+  if (N == 1) {
+    return atcoder::Poly(vector<zt>(lim.back(), down[0]));
+  }
+
+  int M = N/2;
+  vector<int> limL(lim.begin(), lim.begin() + M);
+  vector<int> limR(lim.begin() + M, lim.end());
+  auto mid = trangle(down.modxk(M), limL); // then mid move from [M-1] to [M]
+  return ladder(mid, down.divxk(M), limR);
+}
+
+atcoder::Poly trapezium(atcoder::Poly left, int* lbound, int* ubound, int N) {
+  assert(N > 0);
+  assert(left.size() == ubound[0] - lbound[0]);
+  // input: col{0}@[lbound{0}, ubound{0})
+  // output: col{N-1}
+  if (N == 1) {
+    for (int i = 1; i < left.size(); ++i) left[i] += left[i-1];
+    return left;
+  }
+
+  if (ubound[0] > lbound[N-1]) {
+    atcoder::Poly up(vector<zt>(N, 0));
+    int h = lbound[N-1] - lbound[0];
+    if (h > 0){
+      vector<int> lim(h, 0);
+      for (int i = 0; i < N; ++i) if (lbound[i] - lbound[0] < lim.size()) lim[lbound[i] - lbound[0]] = i+2;
+      for (int i = 1; i < lim.size(); ++i) lim[i] = max(lim[i-1], lim[i]);
+      up += trangle(left.modxk(h), lim);
+    }
+
+    vector<int> lim(N, 0);
+    for (int i = 0; i < N; ++i) lim[i] = ubound[i] - lbound[N-1];
+
+    return ladder(left.divxk(h), up, lim);
+  }
+
+  int K = 0;
+  while (ubound[0] > lbound[K]) K++;
+  auto mid = trapezium(left, lbound, ubound, K);
+
+  auto nex = mid.divxk(lbound[K] - lbound[K-1]);
+  nex.resize(ubound[K] - lbound[K]);
+  nex[0] = std::accumulate(mid.a.begin(), mid.a.begin() + min(lbound[K], ubound[K-1]) - lbound[K-1], nex[0]);
+  return trapezium(nex, lbound+K, ubound+K, N-K);
+}
+
+int lbound[200010], ubound[200010];
+atcoder::Poly solve(vector<pair<int,int>> lim) {
+  for (int i = 0; i < lim.size(); ++i) {
+    lbound[i] = lim[i].first;
+    ubound[i] = lim[i].second;
+    assert(lbound[i] < ubound[i]);
+    if (i > 0) {
+      assert(lbound[i-1] <= lbound[i]);
+      assert(ubound[i-1] <= ubound[i]);
+    }
+  }
+  atcoder::Poly p(vector<zt>(ubound[0]-lbound[0], 0));
+  p[0] = 1;
+  return trapezium(p, lbound, ubound, lim.size());
 }
 
 }
