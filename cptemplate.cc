@@ -2,8 +2,16 @@
 
 using namespace std;
 
-typedef long long i64;
-typedef pair<int, int> pii;
+#ifdef LOCAL
+#include "debug.h"
+#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+#else
+#define debug(...) 42
+#endif
+
+using i64 = long long;
+using vi = vector<int>;
+using pii = pair<int, int>;
 
 const int inf = 1000000007;
 const int maxn = 1100010;
