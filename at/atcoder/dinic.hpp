@@ -132,6 +132,7 @@ template <class Cap> struct mf_graph {
       for (int j = 0; j < g[i].size(); ++j) {
         int e = g[i][j];
         if (cap[e] > 0 && cap[e] == flow[e] && col[i] + col[vv[e]] == 1) {
+          assert(col[i] == 1);
           cuts.push_back(e);
         }
       }
