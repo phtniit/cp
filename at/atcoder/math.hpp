@@ -74,7 +74,7 @@ Z linearRecurrence(Poly p, Poly q, long long n) {
   return p[0] / q[0];
 }
 
-atcoder::Z BM(std::vector<atcoder::Z> vt, int k) {
+atcoder::Z BM(std::vector<atcoder::Z> vt, long long k) {
   atcoder::Poly p;
   p.resize(vt.size());
   for (int i = 0; i < p.size(); ++i) p[i] = vt[i];
