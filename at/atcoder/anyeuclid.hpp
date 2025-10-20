@@ -98,4 +98,30 @@ i64 floor_sum(i64 n, i64 m, i64 a, i64 b) { // \sum{0<=i<=n-1}{[(a*i+b)/m]}
 }
 */
 
+/*
+pll minQ(i64 A, i64 B, i64 C, i64 D) { // A/B < p/q < C/D
+  assert(A >= 0 and B >= 0 and C >= 0 and D >= 0);
+  i64 k1 = A/B, k2 = (C+D-1)/D;
+  if (k1+1 < k2) {
+    return pll{k1+1, 1};
+  }
+  if (A >= B) {
+    // A/B < X/Y = k1+x/y < C/D
+    // A%B / B < x/y < C%D / D
+    auto [x,y] = minQ(A%B, B, C-D*k1, D);
+    return pll{k1*y+x, y};
+  }
+  // A < B and C < D
+  if (A == 0) {
+    // 1/x < C/D
+    // x > D/C
+    return pll{1, D/C+1};
+  }
+  // A/B < X/Y < C/D
+  // B/A > Y/X > D/C
+  auto [y,x] = minQ(D, C, B, A);
+  return pll{x, y};
+}
+*/
+
 #endif // ATCODER_ANYEUCLID_HPP
