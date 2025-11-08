@@ -115,54 +115,6 @@ struct Poly {
     return Poly(res);
   }
 
-  /*
-  friend Poly operator*(const Poly& a, const Poly& b) { // atcoder::convolution_P, 1e9+7
-    if (a.size() == 0 || b.size() == 0) {
-      return Poly();
-    }
-
-    const int lim = 60;
-    if (std::min(a.size(), b.size()) <= lim) {
-      int A = a.size(), B = b.size();
-      atcoder::Poly res;
-      res.resize(A+B-1);
-      for (int i = 0; i < A; ++i) {
-        for (int j = 0; j < B; ++j) {
-          res[i+j] += a[i] * b[j];
-        }
-      }
-      return res;
-    }
-
-    std::vector<int> ap(a.size());
-    std::vector<int> bp(b.size());
-    for (int i = 0; i < a.size(); ++i) ap[i] = a[i].x;
-    for (int i = 0; i < b.size(); ++i) bp[i] = b[i].x;
-    gf::mtt_mul(ap, bp, atcoder::P);
-
-    Poly res;
-    res.resize(ap.size());
-    for (int i = 0; i < ap.size(); ++i) res[i] = ap[i];
-    return res;
-  }
-
-  friend Poly operator*(const Poly& a, const Poly& b) { // atcoder::convolution, 998244353
-    if (a.size() == 0 || b.size() == 0) {
-      return Poly();
-    }
-
-    std::vector<int> ap(a.size());
-    std::vector<int> bp(b.size());
-    for (int i = 0; i < a.size(); ++i) ap[i] = a[i].x;
-    for (int i = 0; i < b.size(); ++i) bp[i] = b[i].x;
-    auto cp = atcoder::convolution<atcoder::P, int>(ap, bp);
-    Poly res;
-    res.resize(cp.size());
-    for (int i = 0; i < cp.size(); ++i) res.a[i] = cp[i];
-    return res;
-  }
-  */
-
   friend Poly operator*(Poly a, Poly b) {
     if (a.size() == 0 || b.size() == 0) {
       return Poly();
