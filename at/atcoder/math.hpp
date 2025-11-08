@@ -208,6 +208,10 @@ atcoder::Z det(std::vector<std::vector<atcoder::Z>> a) {
 
 }
 
+#include "atcoder/simp.hpp"
+
+using namespace std;
+
 namespace increasingShape {
 
 using zt = atcoder::Z;
