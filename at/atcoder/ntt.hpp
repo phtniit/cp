@@ -168,6 +168,21 @@ struct Poly {
       return Poly();
     }
 
+    /*
+    const int lim = 60;
+    if (std::min(a.size(), b.size()) <= lim) {
+      int A = a.size(), B = b.size();
+      atcoder::Poly res;
+      res.resize(A+B-1);
+      for (int i = 0; i < A; ++i) {
+        for (int j = 0; j < B; ++j) {
+          res[i+j] += a[i] * b[j];
+        }
+      }
+      return res;
+    }
+    */
+
     int sz = 1, tot = a.size() + b.size() - 1;
     while (sz < tot) {
       sz *= 2;
