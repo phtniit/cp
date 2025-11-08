@@ -285,6 +285,50 @@ std::pair<Poly, Poly> divAndMod(Poly p, Poly q) {
   reverse(q.a.begin(), q.a.end());
   return {ans, (p - ans * q).modxk(m-1)};
 }
+Poly gnewton(
+      auto g, // std::funtion<Poly(const Poly&)> g,
+      auto gp, // std::function<Poly(const Poly&)> gp,
+      Z f0, int m) {
+  Poly f({f0});
+  int k = 0;
+  while ((1<<k) < m) {
+    k++;
+    auto g0 = g(f), g1 = gp(f);
+    auto f1 = (f - g0 * g1.inv(1<<k)).modxk(1<<k);
+    swap(f.a, f1.a);
+  }
+  return f.modxk(m);
+}
+
+/* 
+// sample use for gnewton
+void solve(int N) {
+  // H[n] = n^{n-1}
+  // h[n] = H[n] / n!
+  // f[n] = F[n] / n!
+  // f = h - exp(f) * x
+  // gnewton solve f, then get F
+  // the answer is (H[n]-F[n])/n
+  vector<zt> H(N+1);
+  for (int i = 1; i <= N; ++i) H[i] = atcoder::fpower(zt{i}, i-1);
+  auto g = [&](const atcoder::Poly& f) -> atcoder::Poly {
+    // g(f) = f + exp(f) * x - h = 0
+    int l = f.size() * 2;
+    auto res = f + f.exp(l).mulxk(1);
+    for (int i = 1; i < l; ++i) res[i] -= H[i] * simp::gifac(i);
+    return res.modxk(l);
+  };
+  auto gp = [&](const atcoder::Poly& f) -> atcoder::Poly {
+    // g'(f) = 1 + exp(f) * x
+    int l = f.size() * 2;
+    auto res = f.exp(l).mulxk(1);
+    res[0] += 1;
+    return res.modxk(l);
+  };
+  auto f = atcoder::gnewton(g, gp, 0, N+1);
+  for (int i = 2; i <= N; ++i) cout << (H[i] - f[i]*simp::gfac(i)) * simp::ginv(i) << "\n";
+}
+*/
 
 }
 
